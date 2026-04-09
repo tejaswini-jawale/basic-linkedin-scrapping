@@ -13,12 +13,18 @@ import json
 import os
 import datetime
 from dotenv import load_dotenv
+import mysql.connector
 
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="sphurtin_org_chart_db"
+)
+
+cursor = db.cursor()
 # Create results directory if it doesn't exist
-if os.environ.get('VERCEL') == '1' or os.environ.get('VERCEL_ENV'):
-    RESULTS_DIR = '/tmp/results'
-else:
-    RESULTS_DIR = os.path.join(os.path.dirname(__file__), 'results')
+RESULTS_DIR = os.path.join(os.path.dirname(__file__), 'results')
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 # Load environment variables
@@ -30,6 +36,42 @@ CORS(app)
 # ─── LINKEDIN API CONFIG ──────────────────────────────────────────────────────
 LINKEDIN_API_KEY = os.getenv('LINKEDIN_API_KEY', '')  # Set your API key as environment variable
 LINKEDIN_API_BASE = 'https://api.linkedin.com/v2'
+
+def save_to_mysql(result):
+    try:
+        query = """
+        INSERT INTO linkedin_profiles (
+            linkedin_url, full_name, location, about,
+            current_company, education, connections, profile_picture
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+            full_name = VALUES(full_name),
+            location = VALUES(location),
+            about = VALUES(about),
+            current_company = VALUES(current_company),
+            education = VALUES(education),
+            connections = VALUES(connections),
+            profile_picture = VALUES(profile_picture)
+        """
+
+        values = (
+            result.get('LinkedIn URL'),
+            result.get('Full Name'),
+            result.get('Location'),
+            result.get('About'),
+            result.get('Current Company'),
+            result.get('Education'),
+            result.get('Connections'),
+            result.get('Profile Picture')
+        )
+
+        cursor.execute(query, values)
+        db.commit()
+
+        print("✅ Saved to MySQL:", result.get('Full Name'))
+
+    except Exception as e:
+        print("❌ DB Error:", e)
 
 def get_linkedin_api_headers():
     """Headers for LinkedIn API requests"""
@@ -1081,6 +1123,9 @@ def scrape_profile():
         result = scrape_company(url) if is_company else scrape_user(url)
 
         # Save results to file
+        # 🔥 ADD THIS
+        if not is_company:
+            save_to_mysql(result)
         saved_file = save_results_to_file([result], "single_profile", url)
 
         response_data = {
