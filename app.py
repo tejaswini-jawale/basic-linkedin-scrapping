@@ -16,9 +16,9 @@ from dotenv import load_dotenv
 import mysql.connector
 
 db = mysql.connector.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("localhost"),
+    user=os.getenv("root"),
+    password=os.getenv(""),
     database=os.getenv("sphurtin_org_chart_db")
 )
 
