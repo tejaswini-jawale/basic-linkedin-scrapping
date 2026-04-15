@@ -39,6 +39,16 @@ CORS(app)
 LINKEDIN_API_KEY = os.getenv('LINKEDIN_API_KEY', '')  # Set your API key as environment variable
 LINKEDIN_API_BASE = 'https://api.linkedin.com/v2'
 
+def get_db_connection():
+    return mysql.connector.connect(
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
+        port=int(os.getenv("DB_PORT", 3306)),
+        autocommit=True
+    )
+
 def save_to_mysql(result):
     try:
         query = """
