@@ -16,12 +16,13 @@ from dotenv import load_dotenv
 import mysql.connector
 
 db = mysql.connector.connect(
-    host=os.getenv("localhost"),
-    user=os.getenv("root"),
-    password=os.getenv(""),
-    database=os.getenv("sphurtin_org_chart_db")
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME"),
+    port=int(os.getenv("DB_PORT", 3306)),
+    connection_timeout=10
 )
-
 
 cursor = db.cursor()
 # Create results directory if it doesn't exist
