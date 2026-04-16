@@ -1060,6 +1060,9 @@ def index():
 
 @app.route("/scrape-profile", methods=["POST"])
 def scrape_profile():
+    user_key = request.headers.get('X-Api-Key')
+    if user_key != "PMAK-69e0aaa2eb80a50001d0ad6c-5415f8c7aba10f77c1116542f2b40d60b4":
+        return jsonify({"error": "Unauthorized: Invalid API Key"}), 401
     """Scrape a single LinkedIn profile or company"""
     try:
         body = request.get_json(silent=True) or {}
