@@ -13,23 +13,23 @@ def test_api_fallback():
 
     # Check if API key is configured
     if LINKEDIN_API_KEY:
-        print(f"✅ LinkedIn API key configured: {LINKEDIN_API_KEY[:10]}...")
+        print(f"[OK] LinkedIn API key configured: {LINKEDIN_API_KEY[:10]}...")
     else:
-        print("⚠️  No LinkedIn API key configured - only scraping will be used")
+        print("[WARN] No LinkedIn API key configured - only scraping will be used")
         print("   To enable API fallback, set LINKEDIN_API_KEY in your .env file\n")
 
-    print("📝 To test scraping, use the web interface at http://localhost:3000")
+    print("[INFO] To test scraping, use the web interface at http://localhost:3000")
     print("   or call the API endpoints with your own LinkedIn URLs:")
     print("   - POST /scrape-profile with a LinkedIn profile/company URL")
     print("   - POST /scrape-bulk with a list of URLs")
     print("   - POST /upload-urls with a file containing URLs\n")
 
-    print("🔧 Example API calls:")
+    print("[TOOL] Example API calls:")
     print("   curl -X POST http://localhost:3000/scrape-profile \\")
     print("        -H 'Content-Type: application/json' \\")
     print("        -d '{\"url\": \"YOUR_LINKEDIN_URL_HERE\"}'\n")
 
-    print("⚠️  Note: Replace YOUR_LINKEDIN_URL_HERE with actual LinkedIn URLs")
+    print("[NOTE] Note: Replace YOUR_LINKEDIN_URL_HERE with actual LinkedIn URLs")
     print("   Only public LinkedIn profiles and companies can be scraped")
 
     print("=== Test Complete ===")
