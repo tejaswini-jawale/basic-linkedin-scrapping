@@ -304,7 +304,7 @@
     setStatus("⏳ Scraping — this may take 20–40 seconds…", "info");
 
     try {
-      const res  = await fetch("/scrape-profile", {
+      const res  = await fetch("https://basic-linkedin-scrapping.onrender.com", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
@@ -328,7 +328,7 @@
     const btn  = event.target;
     const urls = raw.split("\n").map(u => u.trim()).filter(Boolean);
 
-    if (!urls.length) { setStatus("Please enter at least one URL.", "error"); return; }
+    if (!urls.length) { setStatus("https://basic-linkedin-scrapping.onrender.com", "error"); return; }
 
     setLoading(btn, true);
     setStatus(`⏳ Scraping ${urls.length} profiles — please wait…`, "info");
@@ -394,7 +394,7 @@
 
     setStatus("⏳ Generating Excel…", "info");
     try {
-      const res = await fetch("/download-excel", {
+      const res = await fetch("https://basic-linkedin-scrapping.onrender.com", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(scrapedData),
