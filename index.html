@@ -313,7 +313,7 @@
 
       if (!res.ok) { setStatus("❌ " + (data.error || "Unknown error"), "error"); return; }
 
-      renderTable(data);
+      renderTable(data.results || []);
       setStatus("✅ Scraping complete!", "success");
     } catch (err) {
       setStatus("❌ Network error: " + err.message, "error");
