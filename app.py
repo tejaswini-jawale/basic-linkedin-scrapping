@@ -3,7 +3,7 @@ from flask_cors import CORS
 import io
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
-import requests
+from curl_cffi import requests
 from bs4 import BeautifulSoup
 import time
 import random
@@ -108,7 +108,7 @@ def fetch_company_from_api(company_id):
     try:
         # Get basic company info
         url = f"{LINKEDIN_API_BASE}/organizations/{company_id}"
-        response = requests.get(url, headers=get_linkedin_api_headers(), timeout=10)
+        response = requests.get(url, headers=get_linkedin_api_headers(), timeout=10, impersonate="chrome110")
 
         if response.status_code == 200:
             data = response.json()
@@ -156,7 +156,7 @@ def fetch_profile_from_api(profile_id):
             'projection': '(elements*(id,title,company,startDate,endDate))',
             'q': 'owned'
         }
-        response = requests.get(position_url, headers=get_linkedin_api_headers(), params=params, timeout=10)
+        response = requests.get(position_url, headers=get_linkedin_api_headers(), params=params, timeout=10, impersonate="chrome110")
 
         if response.status_code == 200:
             positions_data = response.json()
@@ -179,7 +179,7 @@ def fetch_profile_from_api(profile_id):
             'projection': '(elements*(id,schoolName,degreeName,fieldOfStudy,startDate,endDate))',
             'q': 'owned'
         }
-        response = requests.get(education_url, headers=get_linkedin_api_headers(), params=params, timeout=10)
+        response = requests.get(education_url, headers=get_linkedin_api_headers(), params=params, timeout=10, impersonate="chrome110")
 
         if response.status_code == 200:
             education_data = response.json()
@@ -303,7 +303,7 @@ def normalize_linkedin_url(url):
 
 def google_dork_employees(company_name, company_slug, max_results=25):
     found = {}
-    session = requests.Session()
+    session = requests.Session(impersonate="chrome110")
     session.headers.update(get_google_headers())
 
     queries = []
@@ -609,7 +609,7 @@ def extract_employee_count(soup_main, soup_about, raw_html_main, raw_html_about)
 # ─── COMPANY SCRAPER ──────────────────────────────────────────────────────────
 
 def scrape_company(url):
-    session = requests.Session()
+    session = requests.Session(impersonate="chrome110")
     session.headers.update(get_stealth_headers())
     data = {"LinkedIn URL": url}
 
@@ -785,7 +785,7 @@ def scrape_company(url):
 # ─── USER SCRAPER ─────────────────────────────────────────────────────────────
 
 def scrape_user(url):
-    session = requests.Session()
+    session = requests.Session(impersonate="chrome110")
     session.headers.update({
         "User-Agent": random.choice([
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
