@@ -146,6 +146,13 @@
     </div>
   </header>
 
+  <div class="card" style="padding: 16px 28px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <label style="font-weight: 600; font-size: 0.9rem;" for="apiKeyInput">Your API Key:</label>
+      <input type="password" id="apiKeyInput" placeholder="Enter POSTMAN_API_KEY here..." style="padding: 6px 10px; border-radius: 6px; border: 1.5px solid #ccc; outline: none; flex: 1; max-width: 300px;" />
+    </div>
+  </div>
+
   <!-- Status -->
   <div id="status"></div>
 
@@ -219,6 +226,12 @@
   let scrapedData = [];
 
   /* ── Helpers ── */
+  function getHeaders() {
+    return {
+      "Content-Type": "application/json",
+      "X-Api-Key": document.getElementById("apiKeyInput").value.trim()
+    };
+  }
   function setStatus(msg, type = "info") {
     const el = document.getElementById("status");
     el.textContent = msg;
@@ -304,9 +317,9 @@
     setStatus("⏳ Scraping — this may take 20–40 seconds…", "info");
 
     try {
-      const res  = await fetch("https://basic-linkedin-scrapping.onrender.com", {
+      const res  = await fetch("/scrape-profile", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getHeaders(),
         body: JSON.stringify({ url }),
       });
       const data = await res.json();
@@ -328,7 +341,7 @@
     const btn  = event.target;
     const urls = raw.split("\n").map(u => u.trim()).filter(Boolean);
 
-    if (!urls.length) { setStatus("https://basic-linkedin-scrapping.onrender.com", "error"); return; }
+    if (!urls.length) { setStatus("Please enter at least one URL.", "error"); return; }
 
     setLoading(btn, true);
     setStatus(`⏳ Scraping ${urls.length} profiles — please wait…`, "info");
@@ -336,7 +349,7 @@
     try {
       const res  = await fetch("/scrape-bulk", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getHeaders(),
         body: JSON.stringify({ urls }),
       });
       const data = await res.json();
@@ -371,6 +384,7 @@
 
       const res = await fetch("/upload-urls", {
         method: "POST",
+        headers: { "X-Api-Key": document.getElementById("apiKeyInput").value.trim() },
         body: formData,
       });
       const data = await res.json();
@@ -394,9 +408,9 @@
 
     setStatus("⏳ Generating Excel…", "info");
     try {
-      const res = await fetch("https://basic-linkedin-scrapping.onrender.com", {
+      const res = await fetch("/download-excel", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getHeaders(),
         body: JSON.stringify(scrapedData),
       });
       if (!res.ok) { setStatus("❌ Failed to generate Excel.", "error"); return; }

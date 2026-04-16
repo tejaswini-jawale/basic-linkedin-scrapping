@@ -1060,8 +1060,9 @@ def index():
 
 @app.route("/scrape-profile", methods=["POST"])
 def scrape_profile():
+    POSTMAN_API_KEY = os.getenv('POSTMAN_API_KEY')
     user_key = request.headers.get('X-Api-Key')
-    if user_key != "put_your_key_here":
+    if not POSTMAN_API_KEY or user_key != POSTMAN_API_KEY:
         return jsonify({"error": "Unauthorized: Invalid API Key"}), 401
     """Scrape a single LinkedIn profile or company"""
     try:
@@ -1105,6 +1106,10 @@ def scrape_profile():
 
 @app.route("/scrape-bulk", methods=["POST"])
 def scrape_bulk():
+    POSTMAN_API_KEY = os.getenv('POSTMAN_API_KEY')
+    user_key = request.headers.get('X-Api-Key')
+    if POSTMAN_API_KEY and user_key != POSTMAN_API_KEY:
+        return jsonify({"error": "Unauthorized: Invalid API Key"}), 401
     """Scrape multiple LinkedIn profiles or companies"""
     try:
         body = request.get_json(silent=True) or {}
@@ -1176,6 +1181,10 @@ def scrape_bulk():
 
 @app.route("/download-excel", methods=["POST"])
 def download_excel():
+    POSTMAN_API_KEY = os.getenv('POSTMAN_API_KEY')
+    user_key = request.headers.get('X-Api-Key')
+    if POSTMAN_API_KEY and user_key != POSTMAN_API_KEY:
+        return jsonify({"error": "Unauthorized: Invalid API Key"}), 401
     """Export scraped data to Excel format"""
     try:
         data = request.get_json(silent=True)
@@ -1210,6 +1219,10 @@ def download_excel():
 
 @app.route("/upload-urls", methods=["POST"])
 def upload_urls():
+    POSTMAN_API_KEY = os.getenv('POSTMAN_API_KEY')
+    user_key = request.headers.get('X-Api-Key')
+    if POSTMAN_API_KEY and user_key != POSTMAN_API_KEY:
+        return jsonify({"error": "Unauthorized: Invalid API Key"}), 401
     """Upload a file containing URLs to scrape"""
     try:
         if 'file' not in request.files:
